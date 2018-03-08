@@ -20,11 +20,21 @@ $(document).ready(function() {
     $("#submit").on("click", function(){
         if (player1 === ""){
             player1 = $("#playerName").val();
-            console.log("p1: " +player1);
+            var ref = database.ref("player/1");
+            ref.set({
+                name: player1,
+                win: 0,
+                lose: 0
+            });
         
         } else {
             player2 = $("#playerName").val();
-            console.log("p2: "+player2);
+            var ref = database.ref("player/2");
+            ref.set({
+                name: player2,
+                win: 0,
+                lose: 0
+            });
         };
 
     });
