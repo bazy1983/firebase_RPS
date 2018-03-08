@@ -15,10 +15,11 @@ $(document).ready(function() {
 
     //initial variables
     var player1 = "",
-        player2 = "";
+        player2 = "",
+        tracker = 0;// track which player on document
 
     $("#submit").on("click", function(){
-        if (player1 === ""){
+        if (player1 === ""){ //set player 1 data
             player1 = $("#playerName").val();
             var ref = database.ref("player/1");
             ref.set({
@@ -27,7 +28,7 @@ $(document).ready(function() {
                 lose: 0
             });
         
-        } else {
+        } else { //set player 2 data
             player2 = $("#playerName").val();
             var ref = database.ref("player/2");
             ref.set({
@@ -38,4 +39,16 @@ $(document).ready(function() {
         };
 
     });
+    // when data change in database
+    database.ref("player").on("value", response, error)
+
+    function response(res) {
+        console.log(res.val());
+    };
+
+    function error(err){
+        console.log(err)
+    }
+
+
 });
