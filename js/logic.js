@@ -103,9 +103,14 @@ $(document).ready(function () {
 
         //only when both players exist and they made choices
         if(res.child(0).exists() && res.child(1).exists() && res.val()[0].choice != "" && res.val()[1].choice != ""){
-            var player1choice = res.val()[0].choice,
-                player2choice = res.val()[1].choice;
-                console.log(player1choice, player2choice);
+            var showResult = "",
+                player1choice = parseInt(res.val()[0].choice),
+                player1win = parseInt(res.val()[0].win),
+                player1lose = parseInt(res.val()[0].lose),
+                player2choice = parseInt(res.val()[1].choice),
+                player2win = parseInt(res.val()[1].win),
+                player2lose = parseInt(res.val()[1].lose);
+                //console.log(player1choice, player1win, player1lose, player2choice, player2win, player2lose);
         }
 
     };
