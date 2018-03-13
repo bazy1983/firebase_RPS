@@ -68,11 +68,17 @@ $(document).ready(function() {
             playerID =0
         }
 
+
         if (res.child(0).exists()){
             $(".p0").text(res.val()[0].name);
-        } 
+        } else {
+            $(".p0").text("PLAYER");
+        }
+
         if(res.child(1).exists()) {
             $(".p1").text(res.val()[1].name);
+        } else {
+            $(".p1").text("PLAYER");
         }
         
         
@@ -87,8 +93,8 @@ $(document).ready(function() {
 
     //clears player information when navigate away from window
     $(window).on("unload", function(){
-        var playerRecord = sessionStorage.getItem("playerID");
-        database.ref("player/"+ playerRecord).remove();
+        var playerIndex = sessionStorage.getItem("playerID");
+        database.ref("player/"+ playerIndex).remove();
         sessionStorage.clear();
     })
 
