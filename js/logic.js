@@ -83,6 +83,7 @@ $(document).ready(function () {
             $("#player0 i").removeClass("hidden");
         } else {
             $(".p0").text("PLAYER");
+            $("#player0 i").addClass("hidden");
         }
 
         //shows player information on html
@@ -91,6 +92,7 @@ $(document).ready(function () {
             $("#player1 i").removeClass("hidden");
         } else {
             $(".p1").text("PLAYER");
+            $("#player1 i").addClass("hidden");
         }
 
         if(res.child(0).exists() && res.child(1).exists()){
@@ -108,14 +110,26 @@ $(document).ready(function () {
         console.log(err)
     }
 
-
+    // when first player clicks on any of the choices
     $("#player0 i").on("click", function () {
-        console.log($(this).attr("data"))
-        $(this).siblings().addClass("disabled");
+        if (sessionStorage.getItem("playerID") == 0) {
+            var choiceVal = $(this).attr("data")
+            $(this).siblings().addClass("disabled");
+            database.ref("player/0").update({choice: choiceVal})
+
+        };
+    })
+    //when second player clicks on any of the choices
+    $("#player1 i").on("click", function () {
+        if (sessionStorage.getItem("playerID") == 1) {
+            var choiceVal = $(this).attr("data")
+            $(this).siblings().addClass("disabled");
+            database.ref("player/1").update({choice: choiceVal})
+        };
     })
 
     
-    
+    // A BUTTON FOR TESTING
     $("#console").click(function () {
         console.log("player ID is: " + playerID)
     })
@@ -128,7 +142,7 @@ $(document).ready(function () {
             name: StoredName,
             message: $("#chatinput").val().trim()
         });
-        $("#chatinput").empty();
+        $("#chatinput").val("");
     })
     
     database.ref("chat").on("value", chatResponse)
@@ -148,11 +162,7 @@ $(document).ready(function () {
     //clears player information when navigate away from window
     $(window).on("unload", function () {
         var playerIndex = sessionStorage.getItem("playerID");
-        var StoredName = sessionStorage.getItem("name");
-        var newP = $("<p class= 'mychat'>"),
-            spanChat = $("<span>").text(StoredName + " Has Disconnected");
-            newP.append(spanChat);
-            $(".room").append(newP);  
+        var StoredName = sessionStorage.getItem("name"); 
         database.ref("player/" + playerIndex).remove();
 
         sessionStorage.clear();
