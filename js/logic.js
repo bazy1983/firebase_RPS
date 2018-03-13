@@ -77,7 +77,7 @@ $(document).ready(function () {
             playerID = 0
         }
 
-
+        
         if (res.child(0).exists()) {
             $(".p0").text(res.val()[0].name);
             $("#player0 i").removeClass("hidden");
@@ -95,14 +95,14 @@ $(document).ready(function () {
             $("#player1 i").addClass("hidden");
         }
 
-        if(res.child(0).exists() && res.child(1).exists()){
+        if (res.child(0).exists() && res.child(1).exists()) {
             $(".chatbox").removeClass("disabled")
         } else {
             $(".chatbox").addClass("disabled")
         }
 
         //only when both players exist and they made choices
-        if(res.child(0).exists() && res.child(1).exists() && res.val()[0].choice != "" && res.val()[1].choice != ""){
+        if (res.child(0).exists() && res.child(1).exists() && res.val()[0].choice != "" && res.val()[1].choice != "") {
             var showResult = "",
                 player1choice = parseInt(res.val()[0].choice),
                 player1win = parseInt(res.val()[0].win),
@@ -110,7 +110,50 @@ $(document).ready(function () {
                 player2choice = parseInt(res.val()[1].choice),
                 player2win = parseInt(res.val()[1].win),
                 player2lose = parseInt(res.val()[1].lose);
-                //console.log(player1choice, player1win, player1lose, player2choice, player2win, player2lose);
+            console.log(player1choice, player1win, player1lose, player2choice, player2win, player2lose);
+
+
+            switch (player1choice - player2choice) { //compares user's input against computer
+                case -2: //user wins
+
+                    showResult = res.val()[0].name + " wins!";
+                    console.log(showResult)
+                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    break;
+
+                case -1:
+
+                    showResult = res.val()[1].name+" wins!";
+                    console.log(showResult)
+                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+
+                    break;
+
+                case 0:
+                    showResult = "it's a tie";
+                    console.log(showResult)
+                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    break;
+
+                case 1:
+
+                    showResult = res.val()[0].name +" wins!";
+                    console.log(showResult)
+                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    break;
+
+                case 2:
+
+                    showResult = res.val()[1].name+" wins!";
+                    console.log(showResult)
+                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    break;
+                    
+
+            };
+
+
+
         }
 
     };
@@ -126,7 +169,7 @@ $(document).ready(function () {
         if (sessionStorage.getItem("playerID") == 0) {
             var choiceVal = $(this).attr("data")
             $(this).siblings().addClass("disabled");
-            database.ref("player/0").update({choice: choiceVal})
+            database.ref("player/0").update({ choice: choiceVal })
 
         };
     })
@@ -135,17 +178,17 @@ $(document).ready(function () {
         if (sessionStorage.getItem("playerID") == 1) {
             var choiceVal = $(this).attr("data")
             $(this).siblings().addClass("disabled");
-            database.ref("player/1").update({choice: choiceVal})
+            database.ref("player/1").update({ choice: choiceVal })
         };
     })
 
-    
+
     // A BUTTON FOR TESTING
     $("#console").click(function () {
         console.log("player ID is: " + playerID)
     })
-    
-    
+
+
     //chat functionality
     $("#chat").on("click", function () {
         var StoredName = sessionStorage.getItem("name");
@@ -155,25 +198,25 @@ $(document).ready(function () {
         });
         $("#chatinput").val("");
     })
-    
+
     database.ref("chat").on("value", chatResponse)
-    
+
     function chatResponse(res) {
-        if(res.child("name").exists()){
-        chatData = res.val();
-        var newP = $("<p class= 'mychat'>"),
-            spanName = $("<span class = 'font-weight-bold'>").text(chatData.name+ ": "),
-            spanChat = $("<span>").text(chatData.message);
+        if (res.child("name").exists()) {
+            chatData = res.val();
+            var newP = $("<p class= 'mychat'>"),
+                spanName = $("<span class = 'font-weight-bold'>").text(chatData.name + ": "),
+                spanChat = $("<span>").text(chatData.message);
             newP.append(spanName, spanChat);
-            $(".room").append(newP);    
+            $(".room").append(newP);
         }
     }
-    
-    
+
+
     //clears player information when navigate away from window
     $(window).on("unload", function () {
         var playerIndex = sessionStorage.getItem("playerID");
-        var StoredName = sessionStorage.getItem("name"); 
+        var StoredName = sessionStorage.getItem("name");
         database.ref("player/" + playerIndex).remove();
 
         sessionStorage.clear();
