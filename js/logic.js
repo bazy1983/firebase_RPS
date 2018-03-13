@@ -11,7 +11,7 @@ $(document).ready(function() {
     firebase.initializeApp(config);
 
     var database = firebase.database();
-    //database.ref();
+    
 
     //initial variables
     var player1 = "",
@@ -19,28 +19,28 @@ $(document).ready(function() {
         playerID;// track which player on document
 
     $("#submit").on("click", function(){
-        console.log ("player on this window: " + playerID)
+        
         if (playerID === 0){ //set player 1 data
             player1 = $("#playerName").val();
-            var ref = database.ref("player/0");
+            var ref = database.ref("player/" + playerID);
             ref.set({
                 name: player1,
                 win: 0,
                 lose: 0
             });
-            hide()
             sessionStorage.setItem("playerID", 0);
+            hide()
 
         } else if (playerID === 1) { //set player 2 data
             player2 = $("#playerName").val();
-            var ref = database.ref("player/1");
+            var ref = database.ref("player/" + playerID);
             ref.set({
                 name: player2,
                 win: 0,
                 lose: 0
             });
-            hide();
             sessionStorage.setItem("playerID", 1); 
+            hide();
         };
 
     });
@@ -51,16 +51,19 @@ $(document).ready(function() {
         $("#playerName").hide();
     }
 
+    
+
     // when data change in database
     database.ref("player").on("value", response, error)
 
     function response(res) {
+
         console.log(res.val());
         //sets which player on window
-        if (res.val() === null){
-            playerID = 0;
+        if (res.child(0).exists()){
+            playerID = 1;
         } else {
-            playerID = 1
+            playerID =0
         }
         
     };
@@ -71,12 +74,14 @@ $(document).ready(function() {
 
     //clears player information when navigate away from window
     $(window).on("unload", function(){
-        database.ref("player/"+ sessionStorage.getItem("playerID")).remove();
+        var playerRecord = sessionStorage.getItem("playerID");
+        database.ref("player/"+ playerRecord).remove();
+        sessionStorage.clear();
     })
 
 
 $("#console").click (function(){
-    console.log(sessionStorage.getItem("playerID"))
+    console.log("player ID is: " + playerID)
 })
 
 
