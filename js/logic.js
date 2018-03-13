@@ -46,9 +46,9 @@ $(document).ready(function() {
     });
 
     function hide (){
-        $("#submit").hide();
-        $("label").hide();
-        $("#playerName").hide();
+        $("#submit").fadeOut();
+        $("label").fadeOut();
+        $("#playerName").fadeOut();
     }
 
     
@@ -56,17 +56,30 @@ $(document).ready(function() {
     // when data change in database
     database.ref("player").on("value", response, error)
 
+
+    //HERE WHERE ALL THE FUN HAPPENS
     function response(res) {
 
-        console.log(res.val());
+        // console.log(res.val());
         //sets which player on window
         if (res.child(0).exists()){
             playerID = 1;
         } else {
             playerID =0
         }
+
+        if (res.child(0).exists()){
+            $(".p0").text(res.val()[0].name);
+        } 
+        if(res.child(1).exists()) {
+            $(".p1").text(res.val()[1].name);
+        }
         
+        
+
     };
+
+
 
     function error(err){
         console.log(err)
@@ -83,6 +96,7 @@ $(document).ready(function() {
 $("#console").click (function(){
     console.log("player ID is: " + playerID)
 })
+
 
 
 });

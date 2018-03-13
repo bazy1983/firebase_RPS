@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,20 +14,61 @@
         crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
         crossorigin="anonymous">
+    <link href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
 
-    <label for="player">Your Name: </label>
-    <input type="text" name="player" id="playerName">
-    <button id = "submit">Submit</button>
+    <div class="jumbotron text-center">
+        <h1>Rock - Paper - Scissors</h1>
+    </div>
+    <div class="container">
+        <div class="player text-center my-3">
+            <label for="player" class="lead">Your Name:</label>
+            <input type="text" name="player" id="playerName">
+            <button id="submit">Submit</button>
+        </div>
+        <div class="row">
+            <div id="player0" class="col-sm-4">
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <div class="p0 card-header lead font-italic font-weight-bold">PLAYER</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Light card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+
+            </div>
+
+            <div id="player1" class="col-sm-4">
+                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                    <div class="p1 card-header lead font-italic font-weight-bold">PLAYER</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Light card title</h5>
+                        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat">
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+
 
     <button id="console">show</button>
-
-    <div class="player1"></div>
-    <div class="player2"></div>
-
-
 
     <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
     <script src="./js/logic.js"></script>
