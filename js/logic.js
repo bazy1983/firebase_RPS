@@ -101,6 +101,12 @@ $(document).ready(function () {
             $(".chatbox").addClass("disabled")
         }
 
+        //only when both players exist and they made choices
+        if(res.child(0).exists() && res.child(1).exists() && res.val()[0].choice != "" && res.val()[1].choice != ""){
+            var player1choice = res.val()[0].choice,
+                player2choice = res.val()[1].choice;
+                console.log(player1choice, player2choice);
+        }
 
     };
 
