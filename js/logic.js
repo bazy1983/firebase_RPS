@@ -19,7 +19,13 @@ $(document).ready(function () {
     //initial variables
     var player1 = "",
         player2 = "",
-        playerID;// track which player on document
+        playerID,// track which player on document
+        //rps is to show guesses in the middle of screen
+        rps = [
+            '<i class="fas fa-hand-rock"></i>',
+            '<i class="fas fa-hand-paper"></i>',
+            '<i class="fas fa-hand-scissors"></i>'
+        ];
 
     $("#submit").on("click", function () {
 
@@ -104,6 +110,15 @@ $(document).ready(function () {
         if (res.child(0).exists() && res.child(1).exists()) {
             $(".chatbox").removeClass("disabled");
             $(".chat").addClass("dropshadow");
+            //when new player logs in, reset other player score
+            database.ref("player/0").update({
+                win: 0,
+                lose: 0
+            });
+            database.ref("player/1").update({
+                win: 0,
+                lose: 0
+            });
         } else {
             $(".chatbox").addClass("disabled");
             $(".chat").removeClass("dropshadow");
@@ -127,7 +142,7 @@ $(document).ready(function () {
                     showResult = res.val()[0].name + " wins!";
                     player1win++;
                     player2lose++;
-                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
+                    updateAndReset(player1choice, player1win, player1lose, player2choice, player2win, player2lose, showResult);
                     break;
 
                 case -1:
@@ -135,13 +150,13 @@ $(document).ready(function () {
                     showResult = res.val()[1].name + " wins!";
                     player2win++;
                     player1lose++;
-                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
+                    updateAndReset(player1choice, player1win, player1lose, player2choice, player2win, player2lose, showResult);
 
                     break;
 
                 case 0:
                     showResult = "it's a tie";
-                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
+                    updateAndReset(player1choice, player1win, player1lose, player2choice, player2win, player2lose, showResult);
                     break;
 
                 case 1:
@@ -149,7 +164,7 @@ $(document).ready(function () {
                     showResult = res.val()[0].name + " wins!";
                     player1win++;
                     player2lose++;
-                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
+                    updateAndReset(player1choice, player1win, player1lose, player2choice, player2win, player2lose, showResult);
                     break;
 
                 case 2:
@@ -157,12 +172,20 @@ $(document).ready(function () {
                     showResult = res.val()[1].name + " wins!";
                     player2win++;
                     player1lose++;
-                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
+                    updateAndReset(player1choice, player1win, player1lose, player2choice, player2win, player2lose, showResult);
                     break;
 
 
                     //reset choices and count wins and loses
-                    function updateAndReset(p1win, p1lose, p2win, p2lose, message) {
+                    function updateAndReset(p1choice, p1win, p1lose, p2choice, p2win, p2lose, message) {
+
+                        var p1guessP = $("<p class = 'showguess'>").html(res.val()[0].name + " chooses: "+ rps[p1choice]);
+                        var p2guessP = $("<p class = 'showguess'>").html(res.val()[1].name + " chooses: "+ rps[p2choice]);
+                        var result = $("<p class = 'showguess'>").html(message);
+                        $(".p0guess").append(p1guessP);
+                        $(".p1guess").append(p2guessP);
+                        $("#result").append(result);
+
                         database.ref("player/0").update({
                             choice: "",
                             win: p1win,
@@ -174,10 +197,13 @@ $(document).ready(function () {
                             lose: p2lose
                         });
                         
-                        $(".message").text(message)
-                        setTimeout(function(){
-                            $("i").removeClass("disabled")
-                        },2000)
+
+                        setTimeout(function(){//timeout before reset
+                            $("i").removeClass("disabled");
+                            $(".p0guess").empty();
+                            $(".p1guess").empty();
+                            $("#result").empty();
+                        },3000)
 
                     };
 
