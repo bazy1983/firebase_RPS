@@ -1,5 +1,5 @@
 body {
-    background: #ccc;
+    background: rgb(90, 136, 173);
 }
 
 #playerName {
@@ -52,4 +52,8 @@ body {
     margin: 3px 5px;
     border-radius: 10px;
     padding-left: 10px;
+}
+
+.dropshadow{
+    box-shadow: 0px 0px 10px #000;
 }

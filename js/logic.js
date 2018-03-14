@@ -69,7 +69,6 @@ $(document).ready(function () {
     //HERE WHERE ALL THE FUN HAPPENS
     function response(res) {
 
-        // console.log(res.val());
         //sets which player on window
         if (res.child(0).exists()) {
             playerID = 1;
@@ -81,6 +80,8 @@ $(document).ready(function () {
         if (res.child(0).exists()) {
             //show player1 name and chioces
             $(".p0").text(res.val()[0].name);
+            $("#p0w").text(res.val()[0].win);
+            $("#p0l").text(res.val()[0].lose);
             $("#player0 .rps").removeClass("hidden");
         } else {
             $(".p0").text("PLAYER");
@@ -91,6 +92,8 @@ $(document).ready(function () {
         if (res.child(1).exists()) {
             //show player2 name and choices
             $(".p1").text(res.val()[1].name);
+            $("#p1w").text(res.val()[1].win);
+            $("#p1l").text(res.val()[1].lose);
             $("#player1 .rps").removeClass("hidden");
         } else {
             $(".p1").text("PLAYER");
@@ -99,9 +102,11 @@ $(document).ready(function () {
 
         //when both players logged in, enable chat room
         if (res.child(0).exists() && res.child(1).exists()) {
-            $(".chatbox").removeClass("disabled")
+            $(".chatbox").removeClass("disabled");
+            $(".chat").addClass("dropshadow");
         } else {
-            $(".chatbox").addClass("disabled")
+            $(".chatbox").addClass("disabled");
+            $(".chat").removeClass("dropshadow");
         }
 
         //only when both players exist and they made choices
@@ -122,14 +127,7 @@ $(document).ready(function () {
                     showResult = res.val()[0].name + " wins!";
                     player1win++;
                     player2lose++;
-
-                    /*will code new function that does 2 updates:
-                    reset choices to break if statment add wins and loses to both players
-                    timeout for dom reset
-                    */
-
-                    console.log(showResult)
-                    updateAndReset(player1win, player1lose, player2win, player2lose);
+                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
                     break;
 
                 case -1:
@@ -137,15 +135,13 @@ $(document).ready(function () {
                     showResult = res.val()[1].name + " wins!";
                     player2win++;
                     player1lose++;
-                    console.log(showResult)
-                    updateAndReset(player1win, player1lose, player2win, player2lose);
+                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
 
                     break;
 
                 case 0:
                     showResult = "it's a tie";
-                    console.log(showResult)
-                    updateAndReset(player1win, player1lose, player2win, player2lose);
+                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
                     break;
 
                 case 1:
@@ -153,8 +149,7 @@ $(document).ready(function () {
                     showResult = res.val()[0].name + " wins!";
                     player1win++;
                     player2lose++;
-                    console.log(showResult)
-                    updateAndReset(player1win, player1lose, player2win, player2lose);
+                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
                     break;
 
                 case 2:
@@ -162,23 +157,27 @@ $(document).ready(function () {
                     showResult = res.val()[1].name + " wins!";
                     player2win++;
                     player1lose++;
-                    console.log(showResult)
-                    updateAndReset(player1win, player1lose, player2win, player2lose);
+                    updateAndReset(player1win, player1lose, player2win, player2lose, showResult);
                     break;
 
 
                     //reset choices and count wins and loses
-                    function updateAndReset(p1win, p1lose, p2win, p2lose) {
+                    function updateAndReset(p1win, p1lose, p2win, p2lose, message) {
                         database.ref("player/0").update({
                             choice: "",
                             win: p1win,
                             lose: p1lose
-                        })
+                        });
                         database.ref("player/1").update({
                             choice: "",
                             win: p2win,
                             lose: p2lose
-                        })
+                        });
+                        
+                        $(".message").text(message)
+                        setTimeout(function(){
+                            $("i").removeClass("disabled")
+                        },2000)
 
                     };
 
@@ -186,7 +185,7 @@ $(document).ready(function () {
 
 
 
-        }
+        };
 
     };
 
@@ -200,7 +199,7 @@ $(document).ready(function () {
     $("#player0 .rps").on("click", function () {
         if (sessionStorage.getItem("playerID") == 0) {
             var choiceVal = $(this).attr("data")
-            $(this).siblings().addClass("disabled");
+            $(this).siblings(":not(.results)").addClass("disabled");
             database.ref("player/0").update({ choice: choiceVal });
 
 
@@ -217,7 +216,7 @@ $(document).ready(function () {
     $("#player1 .rps").on("click", function () {
         if (sessionStorage.getItem("playerID") == 1) {
             var choiceVal = $(this).attr("data")
-            $(this).siblings().addClass("disabled");
+            $(this).siblings(":not(.results)").addClass("disabled");
             database.ref("player/1").update({ choice: choiceVal });
 
             // send a notifcation message to the other player on chat
@@ -230,11 +229,6 @@ $(document).ready(function () {
     })
 
 
-    // A BUTTON FOR TESTING
-    $("#console").click(function () {
-        console.log("player ID is: " + playerID)
-    })
-
 
     //chat functionality
     $("#chat").on("click", function () {
@@ -246,7 +240,7 @@ $(document).ready(function () {
         $("#chatinput").val("");
     })
 
-    database.ref("chat").on("value", chatResponse)
+    database.ref("chat").on("value", chatResponse)//send chat data to db
 
     function chatResponse(res) {
         if (res.child("name").exists()) {
@@ -259,12 +253,22 @@ $(document).ready(function () {
         }
     }
 
+    //press Enter will click on the chat button
+    $('#chatinput').keypress(function (e) {
+        var key = e.which;
+        if(key == 13)  // the enter key code
+         {
+           $("#chat").click();
+           return false;  
+         }
+       });  
 
     //clears player information when navigate away from window
     $(window).on("unload", function () {
         var playerIndex = sessionStorage.getItem("playerID");
         var StoredName = sessionStorage.getItem("name");
         database.ref("player/" + playerIndex).remove();
+
 
         sessionStorage.clear();
     })

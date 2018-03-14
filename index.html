@@ -25,13 +25,13 @@
     </div>
     <div class="container">
         <div class="player text-center my-3">
-            <label for="player" class="lead">Your Name:</label>
+            <label for="player" class="lead font-weight-bold">Your Name:</label>
             <input type="text" name="player" id="playerName">
             <button id="submit">Submit</button>
         </div>
-        <div class="row justify-content-center">
+        <div class="row">
             <div id="player0" class="col-sm-4">
-                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card bg-warning mb-3 ml-4" style="max-width: 18rem;">
                     <div class="p0 card-header lead font-italic font-weight-bold">PLAYER</div>
                     <div class="card-body text-center">
                         <i data="0" class="rps fas fa-hand-rock hidden"></i>
@@ -42,11 +42,11 @@
                         <div class="results mt-2">
                             <div class="win float-left">
                                 <i class="pl-5 thumb fas fa-thumbs-up"></i>
-                                <span>0</span>
+                                <span id = "p0w">0</span>
                             </div>
                             <div class="lose">
                                 <i class="thumb fas fa-thumbs-down"></i>
-                                <span>0</span>
+                                <span id = "p0l">0</span>
                             </div>
                         </div>
                     </div>
@@ -54,11 +54,11 @@
             </div>
 
             <div class="col-sm-4">
-
+                <p class="message"></p>
             </div>
 
             <div id="player1" class="col-sm-4">
-                <div class="card bg-light mb-3" style="max-width: 18rem;">
+                <div class="card bg-success  mb-3 ml-4" style="max-width: 18rem;">
                     <div class="p1 card-header lead font-italic font-weight-bold">PLAYER</div>
                     <div class="card-body text-center">
                         <i data="0" class="rps fas fa-hand-rock hidden"></i>
@@ -69,26 +69,26 @@
                         <div class="results mt-2">
                             <div class="win float-left">
                                 <i class="pl-5 thumb fas fa-thumbs-up"></i>
-                                <span>0</span>
+                                <span id = "p1w">0</span>
                             </div>
                             <div class="lose">
                                 <i class="thumb fas fa-thumbs-down"></i>
-                                <span>0</span>
+                                <span id = "p1l">0</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="chat">
-                <div class="room">
-
+            <div class="chat dropshadow">
+                <div class="room d-flex flex-column justify-content-end flex">
+                    <!-- chat goes here -->
                 </div>
-                <div class="chatbox disabled">
+                <div class="chatbox">
                     <div class="input-group mb-3">
                         <input id="chatinput" type="text" class="form-control" placeholder="chat box" aria-label="Recipient's username" aria-describedby="basic-addon2">
                         <div class="input-group-append">
-                            <button id = "chat" class="btn btn-outline-secondary" type="button">Send</button>
+                            <button id="chat" class="btn btn-outline-secondary" type="button">Send</button>
                         </div>
                     </div>
                 </div>
@@ -103,7 +103,6 @@
 
 
 
-        <button id="console">show</button>
 
         <script src="https://www.gstatic.com/firebasejs/4.10.1/firebase.js"></script>
         <script src="./js/logic.js"></script>
