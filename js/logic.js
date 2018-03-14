@@ -77,24 +77,27 @@ $(document).ready(function () {
             playerID = 0
         }
 
-        
+        //when player1 logs in
         if (res.child(0).exists()) {
+            //show player1 name and chioces
             $(".p0").text(res.val()[0].name);
-            $("#player0 i").removeClass("hidden");
+            $("#player0 .rps").removeClass("hidden");
         } else {
             $(".p0").text("PLAYER");
-            $("#player0 i").addClass("hidden");
+            $("#player0 .rps").addClass("hidden");
         }
 
-        //shows player information on html
+        //when player2 logs in
         if (res.child(1).exists()) {
+            //show player2 name and choices
             $(".p1").text(res.val()[1].name);
-            $("#player1 i").removeClass("hidden");
+            $("#player1 .rps").removeClass("hidden");
         } else {
             $(".p1").text("PLAYER");
-            $("#player1 i").addClass("hidden");
+            $("#player1 .rps").addClass("hidden");
         }
 
+        //when both players logged in, enable chat room
         if (res.child(0).exists() && res.child(1).exists()) {
             $(".chatbox").removeClass("disabled")
         } else {
@@ -110,45 +113,74 @@ $(document).ready(function () {
                 player2choice = parseInt(res.val()[1].choice),
                 player2win = parseInt(res.val()[1].win),
                 player2lose = parseInt(res.val()[1].lose);
-            console.log(player1choice, player1win, player1lose, player2choice, player2win, player2lose);
+            //console.log(player1choice, player1win, player1lose, player2choice, player2win, player2lose);
 
 
             switch (player1choice - player2choice) { //compares user's input against computer
                 case -2: //user wins
 
                     showResult = res.val()[0].name + " wins!";
+                    player1win++;
+                    player2lose++;
+
+                    /*will code new function that does 2 updates:
+                    reset choices to break if statment add wins and loses to both players
+                    timeout for dom reset
+                    */
+
                     console.log(showResult)
-                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    updateAndReset(player1win, player1lose, player2win, player2lose);
                     break;
 
                 case -1:
 
-                    showResult = res.val()[1].name+" wins!";
+                    showResult = res.val()[1].name + " wins!";
+                    player2win++;
+                    player1lose++;
                     console.log(showResult)
-                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    updateAndReset(player1win, player1lose, player2win, player2lose);
 
                     break;
 
                 case 0:
                     showResult = "it's a tie";
                     console.log(showResult)
-                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    updateAndReset(player1win, player1lose, player2win, player2lose);
                     break;
 
                 case 1:
 
-                    showResult = res.val()[0].name +" wins!";
+                    showResult = res.val()[0].name + " wins!";
+                    player1win++;
+                    player2lose++;
                     console.log(showResult)
-                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    updateAndReset(player1win, player1lose, player2win, player2lose);
                     break;
 
                 case 2:
 
-                    showResult = res.val()[1].name+" wins!";
+                    showResult = res.val()[1].name + " wins!";
+                    player2win++;
+                    player1lose++;
                     console.log(showResult)
-                    // allResults (userChoice, computerChoice, result, compScore, userScore, rounds);
+                    updateAndReset(player1win, player1lose, player2win, player2lose);
                     break;
-                    
+
+
+                    //reset choices and count wins and loses
+                    function updateAndReset(p1win, p1lose, p2win, p2lose) {
+                        database.ref("player/0").update({
+                            choice: "",
+                            win: p1win,
+                            lose: p1lose
+                        })
+                        database.ref("player/1").update({
+                            choice: "",
+                            win: p2win,
+                            lose: p2lose
+                        })
+
+                    };
 
             };
 
@@ -165,20 +197,35 @@ $(document).ready(function () {
     }
 
     // when first player clicks on any of the choices
-    $("#player0 i").on("click", function () {
+    $("#player0 .rps").on("click", function () {
         if (sessionStorage.getItem("playerID") == 0) {
             var choiceVal = $(this).attr("data")
             $(this).siblings().addClass("disabled");
-            database.ref("player/0").update({ choice: choiceVal })
+            database.ref("player/0").update({ choice: choiceVal });
+
+
+            // send a notifcation message to the other player on chat
+            var StoredName = sessionStorage.getItem("name");
+            database.ref("chat").set({
+                name: StoredName,
+                message: "I made my choice!"
+            });
 
         };
     })
     //when second player clicks on any of the choices
-    $("#player1 i").on("click", function () {
+    $("#player1 .rps").on("click", function () {
         if (sessionStorage.getItem("playerID") == 1) {
             var choiceVal = $(this).attr("data")
             $(this).siblings().addClass("disabled");
-            database.ref("player/1").update({ choice: choiceVal })
+            database.ref("player/1").update({ choice: choiceVal });
+
+            // send a notifcation message to the other player on chat
+            var StoredName = sessionStorage.getItem("name");
+            database.ref("chat").set({
+                name: StoredName,
+                message: "I made my choice!"
+            });
         };
     })
 
