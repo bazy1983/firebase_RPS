@@ -110,15 +110,7 @@ $(document).ready(function () {
         if (res.child(0).exists() && res.child(1).exists()) {
             $(".chatbox").removeClass("disabled");
             $(".chat").addClass("dropshadow");
-            //when new player logs in, reset other player score
-            database.ref("player/0").update({
-                win: 0,
-                lose: 0
-            });
-            database.ref("player/1").update({
-                win: 0,
-                lose: 0
-            });
+            
         } else {
             $(".chatbox").addClass("disabled");
             $(".chat").removeClass("dropshadow");
@@ -179,8 +171,8 @@ $(document).ready(function () {
                     //reset choices and count wins and loses
                     function updateAndReset(p1choice, p1win, p1lose, p2choice, p2win, p2lose, message) {
 
-                        var p1guessP = $("<p class = 'showguess'>").html(res.val()[0].name + " chooses: "+ rps[p1choice]);
-                        var p2guessP = $("<p class = 'showguess'>").html(res.val()[1].name + " chooses: "+ rps[p2choice]);
+                        var p1guessP = $("<p class = 'showguess'>").html(res.val()[0].name + " chooses: " + rps[p1choice]);
+                        var p2guessP = $("<p class = 'showguess'>").html(res.val()[1].name + " chooses: " + rps[p2choice]);
                         var result = $("<p class = 'showguess'>").html(message);
                         $(".p0guess").append(p1guessP);
                         $(".p1guess").append(p2guessP);
@@ -196,14 +188,14 @@ $(document).ready(function () {
                             win: p2win,
                             lose: p2lose
                         });
-                        
 
-                        setTimeout(function(){//timeout before reset
+
+                        setTimeout(function () {//timeout before reset
                             $("i").removeClass("disabled");
                             $(".p0guess").empty();
                             $(".p1guess").empty();
                             $("#result").empty();
-                        },3000)
+                        }, 3000)
 
                     };
 
@@ -276,18 +268,20 @@ $(document).ready(function () {
                 spanChat = $("<span>").text(chatData.message);
             newP.append(spanName, spanChat);
             $(".room").append(newP);
+            var audio = new Audio('./media/chat.wav');
+            audio.play();
         }
     }
 
     //press Enter will click on the chat button
     $('#chatinput').keypress(function (e) {
         var key = e.which;
-        if(key == 13)  // the enter key code
-         {
-           $("#chat").click();
-           return false;  
-         }
-       });  
+        if (key == 13)  // the enter key code
+        {
+            $("#chat").click();
+            return false;
+        }
+    });
 
     //clears player information when navigate away from window
     $(window).on("unload", function () {
